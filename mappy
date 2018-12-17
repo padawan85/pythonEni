@@ -1,0 +1,109 @@
+#NMAP
+#Ouverture d'un socket et scan d'un hôte (ports random)
+#Demande IP
+#ports min  / ports max
+# résulat :  port  status  service
+#tableau de correspondance pour les services
+
+
+
+# coding: utf-8
+
+import socket
+
+
+ip = "127.0.0.1"
+port = 443
+
+
+def isOpen(ip, port):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        try:
+                s.connect((ip, int(port)))
+                s.shutdown(socket.SHUT_RDWR)
+                return True
+        except:
+                return False
+        finally:
+                s.close()
+
+def checkHost(ip, port):
+        ipup = False
+        for i in range(retry):
+                if isOpen(ip, port):
+                        ipup = True
+                        break
+                else:
+                        time.sleep(delay)
+        return ipup
+
+if checkHost(ip, port):
+        print ip + " is UP"
+
+
+        ---------
+
+print """
+----------------------------------------------------------                                                 
+,--.   ,--.  ,---.  ,------. ,------.,--.   ,--. 
+|   `.'   | /  O  \ |  .--. '|  .--. '\  `.'  /  
+|  |'.'|  ||  .-.  ||  '--' ||  '--' | '.    /   
+|  |   |  ||  | |  ||  | --' |  | --'    |  |    
+`--'   `--'`--' `--'`--'     `--'        `--'    
+                                                 
+	Author : Lucie P
+	Date : 17/12/18
+	Description : Scan de ports
+----------------------------------------------------------
+
+"""
+
+
+import socket
+import time
+
+ip = raw_input("Entrer une adresse IP: ") 
+portmin = int(raw_input("Entrer un port min: "))
+portmax = int(raw_input("Entrer un port max : ")) +1
+port = 0
+retry = 1
+delay = 10
+timeout = 3
+
+
+
+
+def isOpen(ip, port):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+                s.connect((ip, int(port)))
+                s.shutdown(socket.SHUT_RDWR)
+                return True
+        except:
+                return False
+        finally:
+                s.close()
+
+def checkHost(ip, port):
+        ipup = False
+        for a in range(retry):
+                if isOpen(ip, port):
+                        ipup = True
+                        break
+            
+        return ipup
+start_time = time.time()
+while port < portmax:
+
+    for i in range(portmin, portmax):
+        port = i
+        if checkHost(ip, port):
+                print "Port : " + str(port) + " Opened"
+        else:
+                print "Port : " + str(port) + " Closed"
+                
+    print("Temps d execution : %s secondes ---" % (time.time() - start_time))
+    break
+
+
