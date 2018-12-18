@@ -59,21 +59,19 @@ print """
 
 """
 
-
 import socket
 import time
 
+#Déclaration des variables
 ip = raw_input("Entrer une adresse IP: ") 
 portmin = int(raw_input("Entrer un port min: "))
 portmax = int(raw_input("Entrer un port max : ")) +1
 port = 0
-retry = 1
-delay = 10
-timeout = 3
 
+#Dictionnaire Port / services
+services = {21:"FTP", 22:"SSH", 23:"Telnet", 25:"SMTP", 80:"HTTP", 53:"DNS"}
 
-
-
+#test de l'ouverture du port
 def isOpen(ip, port):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
@@ -85,25 +83,20 @@ def isOpen(ip, port):
         finally:
                 s.close()
 
-def checkHost(ip, port):
-        ipup = False
-        for a in range(retry):
-                if isOpen(ip, port):
-                        ipup = True
-                        break
-            
-        return ipup
 start_time = time.time()
+#boucle test de port + impression à l'écran
 while port < portmax:
-
     for i in range(portmin, portmax):
         port = i
-        if checkHost(ip, port):
-                print "Port : " + str(port) + " Opened"
+        if isOpen(ip, port):
+                print "Port : " + str(port) + " opened " + services.get(port)
         else:
-                print "Port : " + str(port) + " Closed"
+                print "Port : " + str(port) + " closed"
                 
-    print("Temps d execution : %s secondes ---" % (time.time() - start_time))
+    print "\n-------------------------------------------------"
+    print "Temps d'execution : %s secondes ---" % (time.time() - start_time)
+    print "-------------------------------------------------"
     break
+
 
 
