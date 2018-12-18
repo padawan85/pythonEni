@@ -1,0 +1,62 @@
+#snif scapy
+#Requêtes POST sur port 80 / HTTP
+
+filter="tcp"
+prn=
+
+callback = il capture il affiche
+
+-> vérifier si c'est bien HTTP, si c'est POST afficher
+
+
+
+
+
+
+from scapy.all import *
+import time
+
+print "Attente de requete"
+time.sleep(2)
+
+def scapy_callback(packet):
+    http_packet=str(packet)
+    if http_packet.find('POST'):
+        return POST_print(packet)
+
+def POST_print(pkt):
+    ret = "***************************************POST PACKET****************************************************\n"
+    ret += "\n".join(pkt.sprintf("{Raw:%Raw.load%}\n").split(r"\r\n"))
+    ret += "*****************************************************************************************************\n"
+    return ret
+    
+
+sniff(prn=scapy_callback, filter="tcp and port 80")
+
+
+----------------------------
+
+from scapy.all import *
+import time
+
+print "Attente de requete"
+time.sleep(2)
+
+def scapy_callback(packet):
+    http_packet=str(packet)
+    if http_packet.find('\'POST'):
+        return POST_print(packet)
+    print packet
+def POST_print(pkt):
+    ret = "***************************************POST PACKET****************************************************\n"
+    ret += "\n".join(pkt.sprintf("{Raw:%Raw.load%}\n").split(r"\r\n"))
+    ret += "*****************************************************************************************************\n"
+    return ret
+    
+
+sniff(prn=scapy_callback, lfilter=lambda p: "POST" in str(p), filter="tcp port 80")
+
+
+
+
+

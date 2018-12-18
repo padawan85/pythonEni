@@ -1,0 +1,71 @@
+print """
+------------------------------------------------------------
+  _______     _______  _____          _   _ _      _____  
+ |  __ \ \   / / ____|/ ____|   /\   | \ | | |    |  __ \ 
+ | |__) \ \_/ / (___ | |       /  \  |  \| | |    | |__) |
+ |  ___/ \   / \___ \| |      / /\ \ | . ` | |    |  ___/ 
+ | |      | |  ____) | |____ / ____ \| |\  | |____| |     
+ |_|      |_| |_____/ \_____/_/    \_\_| \_|______|_|     
+                                                          
+ 	Author : Lucie P
+	Date : 17/12/18
+	Description : Scan de ports
+------------------------------------------------------------
+"""
+
+# -*- coding: cp1252 -*-
+
+import time
+from scapy.all import *
+
+#Declaration des variables
+ipd = raw_input("Entrer une adresse IP: ") 
+portmin = int(raw_input("Entrer un port min: "))
+portmax = int(raw_input("Entrer un port max : ")) +1
+ports = random.randint(1024,65535)
+port = 0
+ips = "10.101.200.13"
+
+#Dictionnaire Port / services
+services = {21:"FTP", 22:"SSH", 23:"Telnet", 25:"SMTP", 80:"HTTP", 53:"DNS"}
+
+
+def isPortUp(d,s,p):
+# SYN
+    ip=IP(src=ips,dst=ipd)
+    SYN=TCP(sport=ports,dport=port,flags='S',seq=1000)
+    SYNACK=sr1(ip/SYN)
+
+# ACK
+    ACK=TCP(sport=ports, dport=port, flags='A', seq=SYNACK.ack, ack=SYNACK.seq + 1)
+    send(ip/ACK)
+
+
+
+if ACK.flags == A:
+    return True
+else:
+    return False
+
+
+start_time = time.time()
+#boucle test de port + impression à l'écran
+while port < portmax:
+    for i in range(portmin, portmax):
+        port = i
+        if isPortUp(ipd,ips,port):
+                print "Port : " + str(port) + " opened " + services.get(port)
+        else:
+                print "Port : " + str(port) + " closed"
+                
+    print "\n-------------------------------------------------"
+    print "Temps d'execution : %s secondes ---" % (time.time() - start_time)
+    print "-------------------------------------------------"
+    break
+
+
+-------------------
+Scan avec Scapy _ Glenn
+
+1) vérifier avec ICMP si l'hote est actif
+2) si ok on scan les ports
